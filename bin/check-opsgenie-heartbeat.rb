@@ -78,6 +78,10 @@ class OpsgenieHeartbeat < Sensu::Plugin::Check::CLI
     encoded_name = URI.escape(config[:name])
     uri = URI.parse("https://api.opsgenie.com/v2/heartbeats/#{encoded_name}/ping")
     http = Net::HTTP.new(uri.host, uri.port)
+    http.proxy_address(json_config['proxy_addr']) if json_config['proxy_addr']
+    http.proxy_port(json_config['proxy_port']) if json_config['proxy_port']
+    http.proxy_user(json_config['proxy_user']) if json_config['proxy_user']
+    http.proxy_pass(json_config['proxy_pass']) if json_config['proxy_pass']
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     request = Net::HTTP::Post.new(uri.request_uri, 'Authorization' => "GenieKey #{config[:api_key]}")
